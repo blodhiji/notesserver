@@ -5,14 +5,13 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const fetchuser = require('../midileware/fetchuser');
-const { success } = require('concurrently/src/defaults');
 
 
 
 const JWT_SCRIPT = 'brajeshisa$oy';
 
 // Route 1   Authenticate a user using post "/api/auth/createuser" no login required
-router.post('/createuser', [
+ router.post('/createuser', [
     body('firstname','Enter a valid firstname').isLength({ min: 3 }),
     body('lastname','Enter a valid lastname').isLength({ min: 3 }),
     body('email','Enter a valid email').isEmail(),
@@ -44,15 +43,16 @@ router.post('/createuser', [
             id: user.id
         }
       }
-    const authtoken = jwt.sign(data, JWT_SCRIPT);
-    // res.json(user)
+    const authtoken = await jwt.sign(data, JWT_SCRIPT);
+    // res.json(data.user)
     success = true;
     res.json({success, authtoken})
+    console.log(authtoken)
 
 
 } catch (error) {
     console.log(error.message);
-    res.status(500).send("Internal sever error");
+    res.status(500).send("Internal sever error").json();
 }
 })
 
